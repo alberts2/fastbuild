@@ -170,6 +170,25 @@ FBuildOptions::OptionsResult FBuildOptions::ProcessCommandLine( int argc, char *
                 m_Args += '"';
                 continue;
             }
+            else if (thisArg == "-graphdb")
+            {
+                int pathIndex = (i + 1);
+                if (pathIndex >= argc)
+                {
+                    OUTPUT("FBuild: Error: Missing <path> for '-graphdb' argument\n");
+                    OUTPUT("Try \"%s -help\"\n", programName.Get());
+                    return OPTIONS_ERROR;
+                }
+                m_DependencyGraphFile = argv[pathIndex];
+                i++; // skip extra arg we've consumed
+
+                // add to args we might pass to subprocess
+                m_Args += ' ';
+                m_Args += '"'; // surround config file with quotes to avoid problems with spaces in the path
+                m_Args += m_DependencyGraphFile;
+                m_Args += '"';
+                continue;
+            }
             #if defined( __WINDOWS__ )
                 else if ( thisArg == "-debug" )
                 {
@@ -539,6 +558,7 @@ void FBuildOptions::DisplayHelp( const AString & programName ) const
             " -fastcancel       (Experimental) Fast cancellation on build failure.\n"
             " -fixuperrorpaths  Reformat error paths to be Visual Studio friendly.\n"
             " -forceremote      Force distributable jobs to only be built remotely.\n"
+			" -graphdb <path>   Explicitly specify the dependency graph file (*.fdb) file to use.\n"
             " -help             Show this help.\n"
             " -ide              Enable multiple options when building from an IDE.\n"
             "                   Enables: -noprogress, -fixuperrorpaths &\n"

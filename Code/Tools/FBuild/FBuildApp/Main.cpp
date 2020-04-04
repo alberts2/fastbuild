@@ -170,7 +170,7 @@ int Main( int argc, char * argv[] )
     FBuild fBuild( options );
 
     // load the dependency graph if available
-    if ( !fBuild.Initialize() )
+    if ( !fBuild.Initialize(options.m_DependencyGraphFile.Get()) )
     {
         if ( sharedData )
         {
